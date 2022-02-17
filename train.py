@@ -1,20 +1,18 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
 import torchvision
 import numpy as np
 from src.model import get_model
 from src.data import load_csv, load_images, get_dataloader, train_val_split
 from src.train import train_model
+from src.byol import train_byol
 from config import *
-from torchvision import transforms
+import sys
+import os
 
 print("PyTorch Version: ",torch.__version__)
 print("Torchvision Version: ",torchvision.__version__)
-
-torch.manual_seed(SEED)
-np.random.seed(SEED)
 
 if __name__ == "__main__":
 
@@ -35,11 +33,14 @@ if __name__ == "__main__":
 
     optimizer = optim.Adam(model.parameters(), lr=3e-4)
     scheduler = None
-    
-    criterion = nn.CrossEntropyLoss()
-    
-    model_ft = train_model(
-        model, dataloaders_dict, criterion, optimizer,
-        scheduler=scheduler, num_epochs=num_epochs,
-        device=device, use_wandb=False
-    )
+
+    if sys.argv[1] == "train":
+        criterion = nn.CrossEntropyLoss()
+        
+        model_ft = train_model(
+            model, dataloaders_dict, criterion, optimizer,
+            scheduler=scheduler, num_epochs=num_epochs,
+            device=device, use_wandb=False
+        )
+    elif sys.argv[1] == "byol":
+        resnet = train_byol(model, dataloaders_dict)
