@@ -1,6 +1,6 @@
 import torch
 from torchvision.io import read_image
-from data import IMAGE_DIR
+from config import IMAGE_DIR
 
 class TurtleDataset(torch.utils.data.Dataset):
     def __init__(self, df, transforms, id2idx):

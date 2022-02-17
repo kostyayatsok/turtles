@@ -5,10 +5,10 @@ import pandas as pd
 import requests
 import urllib.parse
 
-from TurtleDataset import TurtleDataset
+from src.TurtleDataset import TurtleDataset
 from torch.utils.data import DataLoader
 
-IMAGE_DIR = './turtle_recall/images'
+from config import IMAGE_DIR
 
 def load_images():
     SOURCE_URL = 'https://storage.googleapis.com/dm-turtle-recall/images.tar'
