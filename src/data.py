@@ -43,10 +43,10 @@ def load_csv():
 
     return train, test
 
-def train_val_split(train_frac=0.7):
-    train_size = int(train.shape[0]*train_frac)
-    train = train.sample(train.shape[0])
-    train, val = train[:train_size], train[train_size:]
+def train_val_split(data, train_frac=0.7):
+    train_size = int(data.shape[0]*train_frac)
+    data = data.sample(data.shape[0])
+    train, val = data[:train_size], data[train_size:]
     print(f"""Using {train.shape} images for training and
                     {val.shape} images for validation""")
     return train, val
