@@ -26,8 +26,6 @@ if __name__ == "__main__":
 
     train, val = train_val_split(train, 0.9)
 
-
-
     dataloaders_dict = {
         "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
         "val" : get_dataloader(val, val_transforms, id2idx, batch_size)
@@ -43,5 +41,5 @@ if __name__ == "__main__":
     model_ft = train_model(
         model, dataloaders_dict, criterion, optimizer,
         scheduler=scheduler, num_epochs=num_epochs,
-        device=num_epochs, use_wandb=False
+        device=device, use_wandb=False
     )

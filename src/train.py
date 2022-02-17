@@ -31,7 +31,9 @@ def train_model(
             running_corrects = 0
 
             # Iterate over data.
-            for inputs, labels in tqdm(dataloaders[phase], total=len(dataloaders[phase])):
+            for inputs, labels in tqdm(
+                                    dataloaders[phase],
+                                    total=len(dataloaders[phase])):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
 
