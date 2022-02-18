@@ -28,4 +28,9 @@ val_transforms = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
+byol_transforms = transforms.Compose([
+    transforms.Resize(input_size),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+])
+
 byol_epochs = 5

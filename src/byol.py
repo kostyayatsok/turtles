@@ -35,8 +35,7 @@ def train_byol(model, dataloaders):
                 if phase == 'train':
                     loss = learner(inputs)
                     if loss.isnan():
-                        print("ooops")
-                        continue
+                        raise "====>>>>> ooops loss is nan <<<<<====="
                     opt.zero_grad()
                     loss.backward()
                     opt.step()

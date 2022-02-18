@@ -50,7 +50,6 @@ if __name__ == "__main__":
         train, val = train_val_split(train, 0.9)
 
         dataloaders_dict = {
-            "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
-            "val" : get_dataloader(val, val_transforms, id2idx, batch_size)
+            "train" : get_dataloader(train, byol_transforms, id2idx, batch_size)
         }
         resnet = train_byol(model, dataloaders_dict)
