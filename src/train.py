@@ -3,6 +3,8 @@ import time
 import torch
 from tqdm.auto import tqdm
 
+from config import CHECKPOINTS_DIR
+
 def train_model(
         model, dataloaders, criterion, optimizer,
         scheduler=None, num_epochs=25, device='cpu', use_wandb=False
@@ -45,11 +47,10 @@ def train_model(
                 with torch.set_grad_enabled(phase == 'train'):
                     # Get model outputs and calculate loss
                     outputs = model(inputs)
-                    print(outputs, labels)
                     loss = criterion(outputs, labels)
 
                     _, preds = torch.max(outputs, 1)
-                    print(loss)
+
                     # backward + optimize only if in training phase
                     if phase == 'train':
                         loss.backward()
@@ -72,7 +73,7 @@ def train_model(
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
-
+                torch.save(model.state_dict(), f"{CHECKPOINTS_DIR}/model.pt")
         print()
         if scheduler is not None:
             scheduler.step()

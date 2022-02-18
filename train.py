@@ -37,7 +37,9 @@ if __name__ == "__main__":
     if sys.argv[1] == "train":
         criterion = nn.CrossEntropyLoss()
         
-        model_ft = train_model(
+        model = model.load_state_dict(torch.load("./improved_net.pt"))
+
+        model = train_model(
             model, dataloaders_dict, criterion, optimizer,
             scheduler=scheduler, num_epochs=num_epochs,
             device=device, use_wandb=False
