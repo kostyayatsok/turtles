@@ -30,8 +30,6 @@ if __name__ == "__main__":
     scheduler = None
 
     if sys.argv[1] == "train":
-        train, val = train_val_split(train, 0.9)
-
         dataloaders_dict = {
             "train" : get_dataloader(train[train.is_known_id], train_transforms, id2idx, batch_size),
             "val" : get_dataloader(val[val.is_known_id], val_transforms, id2idx, batch_size)
@@ -47,8 +45,6 @@ if __name__ == "__main__":
             device=device, use_wandb=False
         )
     elif sys.argv[1] == "byol":
-        train, val = train_val_split(train, 0.9)
-
         dataloaders_dict = {
             "train" : get_dataloader(train, byol_transforms, id2idx, batch_size)
         }

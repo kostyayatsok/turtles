@@ -1,4 +1,7 @@
 import torch
+import torch.nn as nn
+import random
+from torchvision import transforms as T
 from byol_pytorch import BYOL
 from torchvision import models
 import time
@@ -7,13 +10,42 @@ from tqdm.auto import tqdm
 
 def train_byol(model, dataloaders):
 
+
+    class RandomApply(nn.Module):
+        def __init__(self, fn, p):
+            super().__init__()
+            self.fn = fn
+            self.p = p
+        def forward(self, x):
+            if random.random() > self.p:
+                return x
+            return self.fn(x)
+    
+    augment_fn = torch.nn.Sequential(
+        RandomApply(
+            T.ColorJitter(0.8, 0.8, 0.8, 0.2),
+            p = 0.3
+        ),
+        T.RandomHorizontalFlip(),
+        RandomApply(
+            T.GaussianBlur((3, 3), (1.0, 2.0)),
+            p = 0.2
+        ),
+        T.RandomResizedCrop((input_size, input_size)),
+        T.Normalize(
+            mean=torch.tensor([0.485, 0.456, 0.406]),
+            std=torch.tensor([0.229, 0.224, 0.225])),
+    )
+
+
     # resnet = models.resnet50(pretrained=True)
     since = time.time()
     learner = BYOL(
         model,
         image_size = input_size,
         hidden_layer = 'avgpool',
-        use_momentum=False
+        use_momentum=False,
+        augment_fn = augment_fn
     )
     opt = torch.optim.Adam(learner.parameters(), lr=3e-4)
 
