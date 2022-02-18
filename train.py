@@ -23,18 +23,20 @@ if __name__ == "__main__":
     id2idx = {v : i for i, v in enumerate(idx2id)}
 
     train, val = train_val_split(train, 0.9)
-
-    dataloaders_dict = {
-        "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
-        "val" : get_dataloader(val, val_transforms, id2idx, batch_size)
-    }
-
+    
     model = get_model(num_classes, device)
 
     optimizer = optim.Adam(model.parameters(), lr=3e-4)
     scheduler = None
 
     if sys.argv[1] == "train":
+        train, val = train_val_split(train, 0.9)
+
+        dataloaders_dict = {
+            "train" : get_dataloader(train[train.is_known_id], train_transforms, id2idx, batch_size),
+            "val" : get_dataloader(val[val.is_known_id], val_transforms, id2idx, batch_size)
+        }
+
         criterion = nn.CrossEntropyLoss()
         
         model = model.load_state_dict(torch.load("./improved_net.pt"))
@@ -45,4 +47,10 @@ if __name__ == "__main__":
             device=device, use_wandb=False
         )
     elif sys.argv[1] == "byol":
+        train, val = train_val_split(train, 0.9)
+
+        dataloaders_dict = {
+            "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
+            "val" : get_dataloader(val, val_transforms, id2idx, batch_size)
+        }
         resnet = train_byol(model, dataloaders_dict)
