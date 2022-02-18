@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
         criterion = nn.CrossEntropyLoss()
         
-        model = model.load_state_dict(torch.load("./improved_net.pt"))
+        model.load_state_dict(torch.load("./improved-net.pt"))
 
         model = train_model(
             model, dataloaders_dict, criterion, optimizer,
