@@ -43,7 +43,7 @@ if __name__ == "__main__":
         model = train_model(
             model, dataloaders_dict, criterion, optimizer,
             scheduler=scheduler, num_epochs=num_epochs,
-            device=device, use_wandb=False
+            device=device, use_wandb=use_wandb
         )
     elif sys.argv[1] == "byol":
         dataloaders_dict = {
