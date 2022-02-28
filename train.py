@@ -22,7 +22,7 @@ if __name__ == "__main__":
     idx2id = train["turtle_id"].unique()
     id2idx = {v : i for i, v in enumerate(idx2id)}
 
-    train, val = train_val_split(train, 0.9)
+    train, val = train_val_split(train, train_val_split_fraq)
     
     model = get_model(num_classes, device)
 

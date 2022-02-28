@@ -10,10 +10,12 @@ np.random.seed(SEED)
 
 num_classes = 100
 batch_size = 8
-num_epochs = 15
+num_epochs = 20
 input_size = 224
+train_val_split_fraq = 0.9
 feature_extract = False
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+
 IMAGE_DIR = './turtle_recall/images'
 
 CHECKPOINTS_DIR = "./checkpoints/"

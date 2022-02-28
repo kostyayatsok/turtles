@@ -9,8 +9,6 @@ from config import *
 from tqdm.auto import tqdm
 
 def train_byol(model, dataloaders):
-
-
     class RandomApply(nn.Module):
         def __init__(self, fn, p):
             super().__init__()
@@ -49,7 +47,6 @@ def train_byol(model, dataloaders):
     )
     opt = torch.optim.Adam(learner.parameters(), lr=3e-4)
 
-    byol_epochs = 5
     for epoch in range(byol_epochs):
         print('Epoch {}/{}'.format(epoch+1, byol_epochs))
         print('-' * 10)

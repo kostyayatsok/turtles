@@ -45,17 +45,14 @@ def load_csv():
 
 def train_val_split(data, train_frac=0.7):
     train_size = int(data.shape[0]*train_frac)
-    data = data.sample(data.shape[0])
+    # data = data.sample(data.shape[0])
     train, val = data[:train_size], data[train_size:]
-    print(f"""Using {train.shape} images for training and
-                    {val.shape} images for validation""")
+    print(f"Using {train.shape} images for training and {val.shape} images for validation")
     return train, val
 
 def get_dataloader(
     data, data_transforms, id2idx, batch_size=8
 ):
-    print("Initializing Datasets and Dataloaders...")
-
     # Create training and validation datasets
     image_dataset = TurtleDataset(data, data_transforms, id2idx)
     # Create training and validation dataloaders
