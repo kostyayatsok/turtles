@@ -1,7 +1,7 @@
 import torch
 from tqdm.auto import tqdm
 from config import device
-from metrics import mapk
+from src.metrics import mapk
 
 @torch.no_grad()
 def eval_model(model, dataloaders, criterion):    
