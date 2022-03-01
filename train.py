@@ -40,7 +40,7 @@ if __name__ == "__main__":
     model = get_model(num_classes, device)
     if "checkpoint" in args:
         model.load_state_dict(torch.load(args.checkpoint))
-        model.to(device)
+    model.to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=3e-4)
     scheduler = None

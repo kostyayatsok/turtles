@@ -9,7 +9,7 @@ def eval_model(model, dataloaders, criterion):
         running_loss = 0.0
         running_corrects = 0
 
-        predictions, labels = [], []
+        all_predictions, all_labels = [], []
         for inputs, labels in tqdm(
                                 dataloaders[phase],
                                 total=len(dataloaders[phase])):
@@ -26,10 +26,10 @@ def eval_model(model, dataloaders, criterion):
             running_loss += loss.item() * inputs.size(0)
             running_corrects += torch.sum(preds == labels.data)
 
-            labels.append(labels)
-            predictions.append(top5)
-        labels = torch.hstack(labels)
-        predictions = torch.vstack(predictions)
+            all_labels.append(labels)
+            all_predictions.append(top5)
+        labels = torch.hstack(all_labels)
+        predictions = torch.vstack(all_predictions)
 
         loss = running_loss / len(dataloaders[phase].dataset)
         acc = running_corrects.double() / len(dataloaders[phase].dataset)
