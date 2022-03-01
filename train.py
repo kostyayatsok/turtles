@@ -17,10 +17,14 @@ print("Torchvision Version: ",torchvision.__version__)
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode")
-    parser.add_argument("--checkpoint")
+    parser.add_argument("--checkpoint", default=argparse.SUPPRESS)
     parser.add_argument("--use_extra_ids", action="store_true")
+    parser.add_argument("--wandb", action="store_true")
 
     args = parser.parse_args()
+
+    if args.wandb:
+        use_wandb = True
 
     load_images()
     train, test = load_csv()
