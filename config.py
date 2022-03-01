@@ -8,7 +8,7 @@ SEED = 424242
 torch.manual_seed(SEED)
 np.random.seed(SEED)
 
-use_wandb = True
+use_wandb = False
 
 num_classes = 100
 batch_size = 8
