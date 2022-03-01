@@ -18,11 +18,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode")
     parser.add_argument("--checkpoint")
+    parser.add_argument("--use_extra_ids", action="store_true")
 
     args = parser.parse_args()
 
     load_images()
     train, test = load_csv()
+    if not args.use_extra_ids:
+        train = train[train.is_known_id]
 
     idx2id = train["turtle_id"].unique()
     id2idx = {v : i for i, v in enumerate(idx2id)}
@@ -40,8 +43,8 @@ if __name__ == "__main__":
 
     if args.mode == "train":
         dataloaders_dict = {
-            "train" : get_dataloader(train[train.is_known_id], train_transforms, id2idx, batch_size),
-            "val" : get_dataloader(val[val.is_known_id], val_transforms, id2idx, batch_size)
+            "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
+            "val" : get_dataloader(val, val_transforms, id2idx, batch_size)
         }
 
         criterion = nn.CrossEntropyLoss()
@@ -59,13 +62,13 @@ if __name__ == "__main__":
     elif args.mode == "eval":
         dataloaders_dict = {
             "train" : get_dataloader(
-                        train[train.is_known_id],
+                        train,
                         train_transforms,
                         id2idx,
                         batch_size
                     ),
               "val" : get_dataloader(
-                        val[val.is_known_id],
+                        val,
                         val_transforms,
                         id2idx,
                         batch_size
