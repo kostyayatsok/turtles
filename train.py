@@ -19,6 +19,7 @@ if __name__ == "__main__":
     parser.add_argument("--mode")
     parser.add_argument("--checkpoint", default=argparse.SUPPRESS)
     parser.add_argument("--use_extra_ids", action="store_true")
+    parser.add_argument("--not_use_extra_data", action="store_true")
     parser.add_argument("--wandb", action="store_true")
 
     args = parser.parse_args()
@@ -27,7 +28,7 @@ if __name__ == "__main__":
         use_wandb = True
 
     load_images()
-    train, test = load_csv()
+    train, test = load_csv(not args.not_use_extra_data)
     if not args.use_extra_ids:
         train = train[train.is_known_id]
 
