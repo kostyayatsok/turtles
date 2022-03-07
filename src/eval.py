@@ -4,7 +4,8 @@ from config import device
 from src.metrics import mapk
 
 @torch.no_grad()
-def eval_model(model, dataloaders, criterion):    
+def eval_model(model, dataloaders, criterion):
+    model.eval()
     for phase, loader in dataloaders.items():
         running_loss = 0.0
         running_corrects = 0

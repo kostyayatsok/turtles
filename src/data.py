@@ -34,11 +34,10 @@ def load_csv(use_extra=True):
     train = read_csv_from_web('train.csv')
     test = read_csv_from_web('test.csv')
     
+    all_ids = np.unique(train.turtle_id)
     if use_extra:
-        all_ids = np.unique(train.turtle_id)
-
-    extra = read_csv_from_web('extra_images.csv')
-    train = pd.concat((train, extra))
+        extra = read_csv_from_web('extra_images.csv')
+        train = pd.concat((train, extra))
     
     train["is_known_id"] = train["turtle_id"].isin(all_ids)
 
