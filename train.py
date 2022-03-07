@@ -29,6 +29,7 @@ if __name__ == "__main__":
 
     load_images()
     train, val, test = load_csv(not args.not_use_extra_data)
+    print(train.shape, val.shape, test.shape)
     if not args.use_extra_ids:
         train = train[train.is_known_id]
         val = val[val.is_known_id]
