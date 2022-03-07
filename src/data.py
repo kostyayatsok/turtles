@@ -35,13 +35,13 @@ def load_csv(use_extra=True):
     test = read_csv_from_web('test.csv')
     
     all_ids = np.unique(train.turtle_id)
+    extra = read_csv_from_web('extra_images.csv')
     if use_extra:
-        extra = read_csv_from_web('extra_images.csv')
         train = pd.concat((train, extra))
-    
+    extra["is_known_id"] = extra["turtle_id"].isin(all_ids)
     train["is_known_id"] = train["turtle_id"].isin(all_ids)
 
-    return train, test
+    return train, extra, test
 
 def train_val_split(data, train_frac=0.7, shuffle=False):
     train_size = int(data.shape[0]*train_frac)

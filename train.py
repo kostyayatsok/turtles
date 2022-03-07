@@ -28,14 +28,15 @@ if __name__ == "__main__":
         use_wandb = True
 
     load_images()
-    train, test = load_csv(not args.not_use_extra_data)
+    train, val, test = load_csv(not args.not_use_extra_data)
     if not args.use_extra_ids:
         train = train[train.is_known_id]
+        val = val[val.is_known_id]
 
     idx2id = train["turtle_id"].unique()
     id2idx = {v : i for i, v in enumerate(idx2id)}
 
-    train, val = train_val_split(train, train_val_split_fraq)
+    # train, val = train_val_split(train, train_val_split_fraq)
     
 
     model = get_model(num_classes, device)
