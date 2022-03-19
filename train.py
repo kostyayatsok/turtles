@@ -19,7 +19,8 @@ if __name__ == "__main__":
     parser.add_argument("--mode")
     parser.add_argument("--checkpoint", default=argparse.SUPPRESS)
     parser.add_argument("--use_extra_ids", action="store_true")
-    parser.add_argument("--not_use_extra_data", action="store_true")
+    parser.add_argument("--use_extra_data", action="store_true")
+    parser.add_argument("--extra_ids_as_new_turtles", action="store_true")
     parser.add_argument("--wandb", action="store_true")
 
     args = parser.parse_args()
@@ -28,11 +29,14 @@ if __name__ == "__main__":
         use_wandb = True
 
     load_images()
-    train, val, test = load_csv(not args.not_use_extra_data)
-    print(train.shape, val.shape, test.shape)
-    if not args.use_extra_ids:
+    train, val, test = load_csv(args.use_extra_data)
+    if args.extra_ids_as_new_turtles:
+        train[~train.is_known_id, "turtle_id"] = "new_turtle"
+        val[~val.is_known_id, "turtle_id"] = "new_turtle"
+    elif not args.use_extra_ids:
         train = train[train.is_known_id]
         val = val[val.is_known_id]
+    print(train.shape, val.shape, test.shape)
 
     idx2id = train["turtle_id"].unique()
     id2idx = {v : i for i, v in enumerate(idx2id)}
@@ -40,7 +44,7 @@ if __name__ == "__main__":
     # train, val = train_val_split(train, train_val_split_fraq)
     
 
-    model = get_model(num_classes, device)
+    model = get_model(num_classes, device, model_type)
     if "checkpoint" in args:
         model.load_state_dict(torch.load(args.checkpoint))
     model.to(device)

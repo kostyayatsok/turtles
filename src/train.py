@@ -6,9 +6,9 @@ from tqdm.auto import tqdm
 from config import CHECKPOINTS_DIR
 
 def train_model(
-        model, dataloaders, criterion, optimizer,
-        scheduler=None, num_epochs=25, device='cpu', use_wandb=False
-    ):
+    model, dataloaders, criterion, optimizer,
+    scheduler=None, num_epochs=25, device='cpu', use_wandb=False
+):
     since = time.time()
     
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -33,7 +33,7 @@ def train_model(
             running_corrects = 0
 
             # Iterate over data.
-            for inputs, labels in tqdm(
+            for inputs, labels, view in tqdm(
                                     dataloaders[phase],
                                     total=len(dataloaders[phase])):
                 inputs = inputs.to(device)
@@ -46,7 +46,7 @@ def train_model(
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
                     # Get model outputs and calculate loss
-                    outputs = model(inputs)
+                    outputs = model(inputs, view)
                     loss = criterion(outputs, labels)
 
                     _, preds = torch.max(outputs, 1)

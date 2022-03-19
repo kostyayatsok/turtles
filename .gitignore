@@ -3,3 +3,4 @@ __pycache__/
 **/*.pyc
 turtle_recall
 .vscode
+src/__pycache__

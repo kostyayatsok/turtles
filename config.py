@@ -10,13 +10,14 @@ np.random.seed(SEED)
 
 use_wandb = False
 
-num_classes = 100
+num_classes = 101
 batch_size = 8
 num_epochs = 20
 input_size = 224
 train_val_split_fraq = 0.7
 feature_extract = False
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+model_type = "multihead"
 
 IMAGE_DIR = './turtle_recall/images'
 
