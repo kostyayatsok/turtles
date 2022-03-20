@@ -51,7 +51,7 @@ if __name__ == "__main__":
         model.load_state_dict(torch.load(args.checkpoint))
     model.to(device)
 
-    optimizer = optim.Adam(model.parameters(), lr=3e-4)
+    optimizer = optim.Adam(model.parameters(), lr=1e-4)
     scheduler = None
 
     if args.mode == "train":

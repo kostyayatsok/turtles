@@ -11,14 +11,14 @@ def eval_model(model, dataloaders, criterion):
         running_corrects = 0
 
         all_predictions, all_labels = [], []
-        for inputs, labels in tqdm(
+        for inputs, labels, view in tqdm(
                                 dataloaders[phase],
                                 total=len(dataloaders[phase])):
             inputs = inputs.to(device)
             labels = labels.to(device)
 
             # Get model outputs and calculate loss
-            outputs = model(inputs)
+            outputs = model(inputs, view)
             loss = criterion(outputs, labels)
 
             _, preds = torch.max(outputs, 1)
