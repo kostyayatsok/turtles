@@ -22,6 +22,7 @@ if __name__ == "__main__":
     parser.add_argument("--use_extra_data", action="store_true")
     parser.add_argument("--extra_ids_as_new_turtles", action="store_true")
     parser.add_argument("--wandb", action="store_true")
+    parser.add_argument("--views_model", default=argparse.SUPPRESS)
 
     args = parser.parse_args()
 
@@ -45,10 +46,14 @@ if __name__ == "__main__":
 
     # train, val = train_val_split(train, train_val_split_fraq)
     
-
+    views_model = None
     model = get_model(num_classes, device, model_type)
     if "checkpoint" in args:
         model.load_state_dict(torch.load(args.checkpoint))
+    if "views_model" in args:
+        views_model = get_model(3, device, "simple")
+        views_model.load_state_dict(torch.load(args.views_model))
+        views_model.to(device)
     model.to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=1e-4)
@@ -66,9 +71,11 @@ if __name__ == "__main__":
             model, dataloaders_dict, criterion, optimizer,
             scheduler=scheduler, num_epochs=num_epochs,
             device=device, use_wandb=use_wandb, mode=model_type,
-            target="labels", name="model"
+            target="labels", name="model", views_model=views_model
         )
     elif args.mode == "train_views":
+        model = get_model(3, device, model_type)
+        
         dataloaders_dict = {
             "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
             "val" : get_dataloader(val, val_transforms, id2idx, batch_size)

@@ -8,7 +8,7 @@ from config import CHECKPOINTS_DIR
 def train_model(
     model, dataloaders, criterion, optimizer,
     scheduler=None, num_epochs=25, device='cpu', use_wandb=False,
-    mode="simple", target="labels", name="model"
+    mode="simple", target="labels", name="model", views_model=None
 ):
     since = time.time()
     
@@ -41,7 +41,8 @@ def train_model(
                     labels = views
                 inputs = inputs.to(device)
                 labels = labels.to(device)
-
+                if views is None and views_model is not None:
+                    _, views = torch.max(views_model(inputs), dim=1)
                 # zero the parameter gradients
                 optimizer.zero_grad()
 

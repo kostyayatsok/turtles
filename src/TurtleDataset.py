@@ -7,6 +7,7 @@ class TurtleDataset(torch.utils.data.Dataset):
         self.df = df
         self.transforms = transforms
         self.id2idx = id2idx
+        self.view2idx = {"top": 0, "left":1, "right":2}
     def __len__(self):
         return self.df.shape[0]
     def __getitem__(self, idx):
@@ -19,8 +20,7 @@ class TurtleDataset(torch.utils.data.Dataset):
         label = self.id2idx[self.df.iloc[idx]['turtle_id']]
         
         view = self.df.iloc[idx]["image_location"].lower()
-        if view == "top"  : view = 0
-        if view == "left" : view = 1
-        if view == "right": view = 2
+        if view is not None:
+            view = self.view2idx[view]
 
         return img, label, view
