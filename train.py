@@ -28,14 +28,15 @@ if __name__ == "__main__":
     if args.wandb:
         use_wandb = True
 
-    load_images()
     train, val, test = load_csv(args.use_extra_data)
     if args.extra_ids_as_new_turtles:
-        train[~train.is_known_id, "turtle_id"] = "new_turtle"
-        val[~val.is_known_id, "turtle_id"] = "new_turtle"
+        train.loc[~train.is_known_id, "turtle_id"] = "new_turtle"
+        val.loc[~val.is_known_id, "turtle_id"] = "new_turtle"
     elif not args.use_extra_ids:
         train = train[train.is_known_id]
         val = val[val.is_known_id]
+    load_images()
+
     print(train.shape, val.shape, test.shape)
 
     idx2id = train["turtle_id"].unique()

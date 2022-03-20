@@ -18,7 +18,7 @@ class TurtleDataset(torch.utils.data.Dataset):
         
         label = self.id2idx[self.df.iloc[idx]['turtle_id']]
         
-        view = self.df["image_location"].lower()
+        view = self.df.iloc[idx]["image_location"].lower()
         if view == "top"  : view = 0
         if view == "left" : view = 1
         if view == "right": view = 2
