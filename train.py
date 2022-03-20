@@ -31,20 +31,20 @@ if __name__ == "__main__":
 
     train, extra, test = load_csv(args.use_extra_data)
     train, val = train_val_split(train, train_val_split_fraq, True)
+    
     if args.extra_ids_as_new_turtles:
         train.loc[~train.is_known_id, "turtle_id"] = "new_turtle"
         val.loc[~val.is_known_id, "turtle_id"] = "new_turtle"
     elif not args.use_extra_ids:
         train = train[train.is_known_id]
         val = val[val.is_known_id]
-    load_images()
 
     print(train.shape, val.shape, test.shape)
+    
+    load_images()
 
     idx2id = train["turtle_id"].unique()
     id2idx = {v : i for i, v in enumerate(idx2id)}
-
-    # train, val = train_val_split(train, train_val_split_fraq)
     
     views_model = None
     model = get_model(num_classes, device, model_type)
@@ -53,11 +53,6 @@ if __name__ == "__main__":
     if "views_model" in args:
         views_model = get_model(3, device, "simple")
         views_model.load_state_dict(torch.load(args.views_model))
-        views_model.to(device)
-    model.to(device)
-
-    optimizer = optim.Adam(model.parameters(), lr=1e-4)
-    scheduler = None
 
     if args.mode == "train":
         dataloaders_dict = {
@@ -66,6 +61,8 @@ if __name__ == "__main__":
         }
 
         criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters(), lr=1e-4)
+        scheduler = None
 
         model = train_model(
             model, dataloaders_dict, criterion, optimizer,
@@ -74,14 +71,16 @@ if __name__ == "__main__":
             target="labels", name="model", views_model=views_model
         )
     elif args.mode == "train_views":
-        model = get_model(3, device, model_type)
-        
         dataloaders_dict = {
             "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
             "val" : get_dataloader(val, val_transforms, id2idx, batch_size)
         }
+        
+        model = get_model(3, device, "simple")        
 
         criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters(), lr=1e-4)
+        scheduler = None
 
         model = train_model(
             model, dataloaders_dict, criterion, optimizer,
