@@ -25,7 +25,7 @@ class MultiheadModel(nn.Module):
         out = self.model(image)
 
         n = self.num_classes
-        mask = view.repeat(1, 3*n)
+        mask = view.view(-1, 1).repeat(1, 3*n)
         mask[:,0*n:1*n] = mask[:,0*n:1*n] == 0
         mask[:,1*n:2*n] = mask[:,1*n:2*n] == 1
         mask[:,2*n:3*n] = mask[:,2*n:3*n] == 2
@@ -33,3 +33,7 @@ class MultiheadModel(nn.Module):
         out = out[mask].view(-1, n)
 
         return out
+
+if __name__ == "__main__":
+    model = MultiheadModel(10)
+    model(torch.zeros(8, 3, 224, 224), torch.zeros(8))
