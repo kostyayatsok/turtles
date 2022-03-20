@@ -28,7 +28,8 @@ if __name__ == "__main__":
     if args.wandb:
         use_wandb = True
 
-    train, val, test = load_csv(args.use_extra_data)
+    train, extra, test = load_csv(args.use_extra_data)
+    train, val = train_val_split(train, train_val_split_fraq, True)
     if args.extra_ids_as_new_turtles:
         train.loc[~train.is_known_id, "turtle_id"] = "new_turtle"
         val.loc[~val.is_known_id, "turtle_id"] = "new_turtle"
