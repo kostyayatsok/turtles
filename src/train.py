@@ -7,7 +7,8 @@ from config import CHECKPOINTS_DIR
 
 def train_model(
     model, dataloaders, criterion, optimizer,
-    scheduler=None, num_epochs=25, device='cpu', use_wandb=False
+    scheduler=None, num_epochs=25, device='cpu', use_wandb=False,
+    mode="simple", target="labels", name="model"
 ):
     since = time.time()
     
@@ -33,9 +34,11 @@ def train_model(
             running_corrects = 0
 
             # Iterate over data.
-            for inputs, labels, view in tqdm(
+            for inputs, labels, views in tqdm(
                                     dataloaders[phase],
                                     total=len(dataloaders[phase])):
+                if target == "views":
+                    labels = views
                 inputs = inputs.to(device)
                 labels = labels.to(device)
 
@@ -46,7 +49,11 @@ def train_model(
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
                     # Get model outputs and calculate loss
-                    outputs = model(inputs, view)
+                    if mode == "simple":
+                        outputs = model(inputs)
+                    elif mode == "multihead":
+                        outputs = model(inputs, views)
+
                     loss = criterion(outputs, labels)
 
                     _, preds = torch.max(outputs, 1)
@@ -73,7 +80,7 @@ def train_model(
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
-                torch.save(model.state_dict(), f"{CHECKPOINTS_DIR}/model.pt")
+                torch.save(model.state_dict(), f"{CHECKPOINTS_DIR}/{name}.pt")
         print()
         if scheduler is not None:
             scheduler.step()

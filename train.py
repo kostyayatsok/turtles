@@ -65,8 +65,23 @@ if __name__ == "__main__":
         model = train_model(
             model, dataloaders_dict, criterion, optimizer,
             scheduler=scheduler, num_epochs=num_epochs,
-            device=device, use_wandb=use_wandb
+            device=device, use_wandb=use_wandb, mode=model_type,
+            target="labels", name="model"
         )
+    elif args.mode == "train_views":
+        dataloaders_dict = {
+            "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
+            "val" : get_dataloader(val, val_transforms, id2idx, batch_size)
+        }
+
+        criterion = nn.CrossEntropyLoss()
+
+        model = train_model(
+            model, dataloaders_dict, criterion, optimizer,
+            scheduler=scheduler, num_epochs=2,
+            device=device, use_wandb=use_wandb, mode="simple",
+            target="views", name="model_views"
+        )    
     elif args.mode == "byol":
         dataloaders_dict = {
             "train" : get_dataloader(train, byol_transforms, id2idx, batch_size)
