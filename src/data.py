@@ -29,15 +29,15 @@ def read_csv_from_web(file_name):
     content = requests.get(url).content
     return pd.read_csv(io.StringIO(content.decode('utf-8')))
 
-def load_csv(use_extra=True):
+def load_csv(use_extra=0.):
     # Read in csv files.
     train = read_csv_from_web('train.csv')
     test = read_csv_from_web('test.csv')
     
     all_ids = np.unique(train.turtle_id)
     extra = read_csv_from_web('extra_images.csv')
-    if use_extra:
-        train = pd.concat((train, extra))
+    if use_extra > 0:
+        train = pd.concat((train, extra.sample(extra.shape[0]*use_extra)))
     extra["is_known_id"] = extra["turtle_id"].isin(all_ids)
     train["is_known_id"] = train["turtle_id"].isin(all_ids)
 
@@ -52,7 +52,7 @@ def train_val_split(data, train_frac=0.7, shuffle=False):
     return train, val
 
 def get_dataloader(
-    data, data_transforms, id2idx, batch_size=8
+    data, data_transforms, id2idx, batch_size=8, shuffle=True
 ):
     # Create training and validation datasets
     image_dataset = TurtleDataset(data, data_transforms, id2idx)
@@ -60,7 +60,7 @@ def get_dataloader(
     dataloader = DataLoader(
         image_dataset,
         batch_size=batch_size,
-        shuffle=True,
+        shuffle=shuffle,
         num_workers=2,
         pin_memory=True
     )

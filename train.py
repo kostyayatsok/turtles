@@ -19,7 +19,7 @@ if __name__ == "__main__":
     parser.add_argument("--mode")
     parser.add_argument("--checkpoint", default=argparse.SUPPRESS)
     parser.add_argument("--use_extra_ids", action="store_true")
-    parser.add_argument("--use_extra_data", action="store_true")
+    parser.add_argument("--use_extra_data", default=0., type=float)
     parser.add_argument("--extra_ids_as_new_turtles", action="store_true")
     parser.add_argument("--wandb", action="store_true")
     parser.add_argument("--views_model", default=argparse.SUPPRESS)
@@ -75,7 +75,7 @@ if __name__ == "__main__":
             "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
             "val" : get_dataloader(val, val_transforms, id2idx, batch_size)
         }
-        
+
         model = get_model(3, device, "simple")        
 
         criterion = nn.CrossEntropyLoss()

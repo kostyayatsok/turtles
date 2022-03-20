@@ -39,30 +39,16 @@ def train_model(
                                     total=len(dataloaders[phase])):
                 if target == "views":
                     labels = views
-                inputs = inputs.to(device)
-                labels = labels.to(device)
-                if views is None and views_model is not None:
-                    _, views = torch.max(views_model(inputs), dim=1)
-                # zero the parameter gradients
                 optimizer.zero_grad()
 
-                # forward
-                # track history if only in train
-                with torch.set_grad_enabled(phase == 'train'):
-                    # Get model outputs and calculate loss
-                    if mode == "simple":
-                        outputs = model(inputs)
-                    elif mode == "multihead":
-                        outputs = model(inputs, views)
-
-                    loss = criterion(outputs, labels)
-
-                    _, preds = torch.max(outputs, 1)
-
-                    # backward + optimize only if in training phase
-                    if phase == 'train':
-                        loss.backward()
-                        optimizer.step()
+                outputs, preds = predict(
+                    model, inputs, labels, views,
+                    device, phase, views_model, mode
+                )
+                loss = criterion(outputs, labels)
+                if phase == 'train':
+                    loss.backward()
+                    optimizer.step()
                 # statistics
                 running_loss += loss.item() * inputs.size(0)
                 running_corrects += torch.sum(preds == labels.data)
@@ -92,3 +78,30 @@ def train_model(
     # load best model weights
     model.load_state_dict(best_model_wts)
     return model
+
+def predict(
+    model, inputs, labels, views, device,
+    phase='val', views_model=None, mode='simple'
+):
+    inputs = inputs.to(device)
+    labels = labels.to(device)
+    views = views.to(device).float()
+    if views_model is not None:
+        _, views_p = torch.max(views_model(inputs), dim=1)
+        mask = (views == views)
+        views[~mask] = views_p[~mask].float()
+
+    # zero the parameter gradients
+
+    # forward
+    # track history if only in train
+    with torch.set_grad_enabled(phase == 'train'):
+        # Get model outputs and calculate loss
+        if mode == "simple":
+            outputs = model(inputs)
+        elif mode == "multihead":
+            outputs = model(inputs, views)
+
+        _, preds = torch.max(outputs, 1)
+
+    return outputs, preds
