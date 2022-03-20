@@ -19,7 +19,8 @@ if __name__ == "__main__":
     parser.add_argument("--mode")
     parser.add_argument("--checkpoint", default=argparse.SUPPRESS)
     parser.add_argument("--use_extra_ids", action="store_true")
-    parser.add_argument("--use_extra_data", default=0., type=float)
+    parser.add_argument("--use_extra_data", action="store_true")
+    parser.add_argument("--new_turtles_fraq", default=0., type=float)
     parser.add_argument("--extra_ids_as_new_turtles", action="store_true")
     parser.add_argument("--wandb", action="store_true")
     parser.add_argument("--views_model", default=argparse.SUPPRESS)
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     if args.wandb:
         use_wandb = True
 
-    train, extra, test = load_csv(args.use_extra_data)
+    train, extra, test = load_csv(args.use_extra_data, args.new_turtles_fraq)
     train, val = train_val_split(train, train_val_split_fraq, True)
     
     if args.extra_ids_as_new_turtles:
@@ -46,6 +47,8 @@ if __name__ == "__main__":
     idx2id = train["turtle_id"].unique()
     id2idx = {v : i for i, v in enumerate(idx2id)}
     
+    torch.save(idx2id, "idx2id.pt")
+
     views_model = None
     model = get_model(num_classes, device, model_type)
     if "checkpoint" in args:

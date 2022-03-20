@@ -20,7 +20,7 @@ class TurtleDataset(torch.utils.data.Dataset):
         label = self.id2idx[self.df.iloc[idx]['turtle_id']]
         
         view = self.df.iloc[idx]["image_location"]
-        if view is not None:
+        if view == view:
             view = self.view2idx[view.lower()]
 
         return img, label, view

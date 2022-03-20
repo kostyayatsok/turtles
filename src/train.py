@@ -37,6 +37,9 @@ def train_model(
             for inputs, labels, views in tqdm(
                                     dataloaders[phase],
                                     total=len(dataloaders[phase])):
+                inputs = inputs.to(device)
+                labels = labels.to(device)
+                views = views.to(device).float()
                 if target == "views":
                     labels = views
                 optimizer.zero_grad()
