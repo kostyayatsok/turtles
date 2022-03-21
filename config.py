@@ -12,9 +12,9 @@ use_wandb = False
 
 num_classes = 101#2265
 batch_size = 8
-num_epochs = 15
+num_epochs = 30
 input_size = 224
-train_val_split_fraq = 0.7
+train_val_split_fraq = 0.9
 feature_extract = False
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 model_type = "simple"
