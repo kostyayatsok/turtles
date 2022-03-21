@@ -10,6 +10,7 @@ from src.eval import eval_model
 from src.byol import train_byol
 from config import *
 import argparse
+import pandas as pd
 
 print("PyTorch Version: ",torch.__version__)
 print("Torchvision Version: ",torchvision.__version__)
@@ -21,7 +22,6 @@ if __name__ == "__main__":
     parser.add_argument("--use_extra_ids", action="store_true")
     parser.add_argument("--use_extra_data", action="store_true")
     parser.add_argument("--new_turtles_fraq", default=0., type=float)
-    parser.add_argument("--extra_ids_as_new_turtles", action="store_true")
     parser.add_argument("--wandb", action="store_true")
     parser.add_argument("--views_model", default=argparse.SUPPRESS)
 
@@ -30,24 +30,25 @@ if __name__ == "__main__":
     if args.wandb:
         use_wandb = True
 
-    train, extra, test = load_csv(args.use_extra_data, args.new_turtles_fraq)
-    train, val = train_val_split(train, train_val_split_fraq, True)
-    
-    if args.extra_ids_as_new_turtles:
-        train.loc[~train.is_known_id, "turtle_id"] = "new_turtle"
-        val.loc[~val.is_known_id, "turtle_id"] = "new_turtle"
-    elif not args.use_extra_ids:
-        train = train[train.is_known_id]
-        val = val[val.is_known_id]
-
-    print(train.shape, val.shape, test.shape)
-    
     load_images()
-
+    train, extra, test = load_csv()
+  
+    if args.new_turtles_fraq > 0.:
+        n_unknown = int(train.shape[0]*args.new_turtles_fraq)
+        unknown = extra[~extra["is_known_id"]].sample(n_unknown)
+        unknown["turtle_id"] = "new_turtle"
+        train = pd.concat((train, unknown))
+    elif args.use_extra_ids:
+        train = pd.concat((train, extra))
+    if args.use_extra_data:
+        train = pd.concat((train, extra[extra.is_known_id]))
+    
     idx2id = train["turtle_id"].unique()
     id2idx = {v : i for i, v in enumerate(idx2id)}
-    
     torch.save(idx2id, "idx2id.pt")
+
+    train, val = train_val_split(train, train_val_split_fraq, True)
+    print(train.shape, val.shape, test.shape)
 
     views_model = None
     model = get_model(num_classes, device, model_type)
@@ -64,7 +65,7 @@ if __name__ == "__main__":
         }
 
         criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=1e-4)
+        optimizer = optim.Adam(model.parameters(), lr=3e-4)
         scheduler = None
 
         model = train_model(

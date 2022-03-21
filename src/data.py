@@ -29,7 +29,7 @@ def read_csv_from_web(file_name):
     content = requests.get(url).content
     return pd.read_csv(io.StringIO(content.decode('utf-8')))
 
-def load_csv(use_extra=False, unknown_fraq=0.):
+def load_csv():
     # Read in csv files.
     train = read_csv_from_web('train.csv')
     test = read_csv_from_web('test.csv')
@@ -38,11 +38,7 @@ def load_csv(use_extra=False, unknown_fraq=0.):
     extra = read_csv_from_web('extra_images.csv')
     extra["is_known_id"] = extra["turtle_id"].isin(all_ids)
     train["is_known_id"] = train["turtle_id"].isin(all_ids)
-    if use_extra:
-        train = pd.concat((train, extra[extra["is_known_id"]]))
-    if unknown_fraq > 0.:
-        train = pd.concat((train, extra[extra["is_known_id"]].sample(int(train.shape[0]*unknown_fraq))))
-
+  
     return train, extra, test
 
 def train_val_split(data, train_frac=0.7, shuffle=False):
