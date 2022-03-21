@@ -2,12 +2,16 @@ from torchvision import models
 import torch.nn as nn
 import torch
 
-def get_model(num_classes, device='cpu', type="simple"):
-    if type == "simple":
-        model = models.resnet50(pretrained=True)
-        num_ftrs = model.fc.in_features
-        model.fc = nn.Linear(num_ftrs, num_classes)
-    elif type == "multihead":
+def get_model(num_classes, device='cpu', model_type="simple"):
+    if model_type == "simple":
+        # model = models.resnet50(pretrained=True)
+        # num_ftrs = model.fc.in_features
+        # model.fc = nn.Linear(num_ftrs, num_classes)
+
+        model = models.densenet121(pretrained=True)
+        num_ftrs = model.classifier.in_features
+        model.classifier = nn.Linear(num_ftrs, num_classes)
+    elif model_type == "multihead":
         model = MultiheadModel(num_classes)
     return model.to(device)
 

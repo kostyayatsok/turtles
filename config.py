@@ -3,7 +3,7 @@ from torchvision import transforms
 import os
 import numpy as np
 
-SEED = 424242
+SEED = 42
 
 torch.manual_seed(SEED)
 np.random.seed(SEED)
@@ -12,7 +12,7 @@ use_wandb = False
 
 num_classes = 101#2265
 batch_size = 8
-num_epochs = 10
+num_epochs = 15
 input_size = 224
 train_val_split_fraq = 0.7
 feature_extract = False
