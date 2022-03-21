@@ -25,11 +25,15 @@ CHECKPOINTS_DIR = "./checkpoints/"
 os.makedirs(CHECKPOINTS_DIR, exist_ok=True)
 
 train_transforms = transforms.Compose([
-    transforms.Resize(input_size),
-    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    # transforms.Resize(input_size),
+    transforms.RandomResizedCrop(input_size, scale=(0.5, 1.)),
+    transforms.RandomHorizontalFlip(),
+    transforms.Normalize(
+      [0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 val_transforms = transforms.Compose([
     transforms.Resize(input_size),
+    transforms.CenterCrop(input_size),
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 

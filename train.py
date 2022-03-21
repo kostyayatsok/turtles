@@ -38,6 +38,7 @@ if __name__ == "__main__":
         unknown = extra[~extra["is_known_id"]].sample(n_unknown)
         unknown["turtle_id"] = "new_turtle"
         train = pd.concat((train, unknown))
+        print(f"Add {n_unknown} new_turtles")
     elif args.use_extra_ids:
         train = pd.concat((train, extra))
     if args.use_extra_data:
@@ -65,7 +66,8 @@ if __name__ == "__main__":
         }
 
         criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=3e-4)
+        # optimizer = optim.Adam(model.parameters(), lr=3e-4)
+        optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
         scheduler = None
 
         model = train_model(
