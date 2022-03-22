@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
         criterion = nn.CrossEntropyLoss()
         # optimizer = optim.Adam(model.parameters(), lr=3e-4)
-        optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+        optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
         scheduler = None
 
         model = train_model(

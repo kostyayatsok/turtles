@@ -11,8 +11,8 @@ np.random.seed(SEED)
 use_wandb = False
 
 num_classes = 101#2265
-batch_size = 8
-num_epochs = 30
+batch_size = 32
+num_epochs = 15
 input_size = 224
 train_val_split_fraq = 0.9
 feature_extract = False

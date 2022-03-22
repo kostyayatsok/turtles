@@ -4,13 +4,13 @@ import torch
 
 def get_model(num_classes, device='cpu', model_type="simple"):
     if model_type == "simple":
-        # model = models.resnet50(pretrained=True)
-        # num_ftrs = model.fc.in_features
-        # model.fc = nn.Linear(num_ftrs, num_classes)
+        model = models.resnet50(pretrained=True)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, num_classes)
 
-        model = models.densenet121(pretrained=True)
-        num_ftrs = model.classifier.in_features
-        model.classifier = nn.Linear(num_ftrs, num_classes)
+        # model = models.densenet121(pretrained=True)
+        # num_ftrs = model.classifier.in_features
+        # model.classifier = nn.Linear(num_ftrs, num_classes)
     elif model_type == "multihead":
         model = MultiheadModel(num_classes)
     return model.to(device)
@@ -18,9 +18,15 @@ def get_model(num_classes, device='cpu', model_type="simple"):
 class MultiheadModel(nn.Module):
     def __init__(self, num_classes) -> None:
         super().__init__()
-        model = models.resnet50(pretrained=True)
-        num_ftrs = model.fc.in_features
-        model.fc = nn.Linear(num_ftrs, 3*num_classes)
+        # model = models.resnet50(pretrained=True)
+        # num_ftrs = model.fc.in_features
+        # model.fc = nn.Linear(num_ftrs, 3*num_classes)
+        model = models.densenet121(pretrained=True)
+        num_ftrs = model.classifier.in_features
+        model.classifier = nn.Sequential(
+          nn.Linear(num_ftrs, num_classes),
+          nn.Linear(num_classes, 3*num_classes)
+        )
 
         self.model = model
         self.num_classes = num_classes
