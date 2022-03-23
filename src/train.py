@@ -8,7 +8,7 @@ from config import CHECKPOINTS_DIR
 def train_model(
     model, dataloaders, criterion, optimizer,
     scheduler=None, num_epochs=25, device='cpu', use_wandb=False,
-    mode="simple", target="labels", name="model", views_model=None
+    mode="simple", target="labels", name="model", views_model=None, wandb_name=None
 ):
     since = time.time()
     
@@ -17,7 +17,7 @@ def train_model(
 
     if use_wandb:
         import wandb
-        wandb.init(project="turtles")
+        wandb.init(project="turtles", name=wandb_name)
 
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))

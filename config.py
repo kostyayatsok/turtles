@@ -12,7 +12,7 @@ use_wandb = False
 
 num_classes = 101#2265
 batch_size = 32
-num_epochs = 15
+num_epochs = 30
 input_size = 224
 train_val_split_fraq = 0.9
 feature_extract = False
@@ -26,10 +26,11 @@ os.makedirs(CHECKPOINTS_DIR, exist_ok=True)
 
 train_transforms = transforms.Compose([
     # transforms.Resize(input_size),
+    # transforms.CenterCrop(input_size),
+    # transforms.RandomAffine(degrees=(0, 70), translate=(0.1, 0.11), scale=(0.75, 0.99)),
     transforms.RandomResizedCrop(input_size, scale=(0.5, 1.)),
     transforms.RandomHorizontalFlip(),
-    transforms.Normalize(
-      [0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 val_transforms = transforms.Compose([
     transforms.Resize(input_size),

@@ -4,13 +4,17 @@ import torch
 
 def get_model(num_classes, device='cpu', model_type="simple"):
     if model_type == "simple":
-        model = models.resnet50(pretrained=True)
-        num_ftrs = model.fc.in_features
-        model.fc = nn.Linear(num_ftrs, num_classes)
+        # model = models.resnet18(pretrained=True)
+        # num_ftrs = model.fc.in_features
+        # model.fc = nn.Linear(num_ftrs, num_classes)
 
-        # model = models.densenet121(pretrained=True)
-        # num_ftrs = model.classifier.in_features
-        # model.classifier = nn.Linear(num_ftrs, num_classes)
+        model = models.densenet121(pretrained=True)
+        num_ftrs = model.classifier.in_features
+        model.classifier = nn.Linear(num_ftrs, num_classes)
+
+        # model = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub', 'nvidia_efficientnet_b0', pretrained=True)
+        # num_ftrs = model.classifier.fc.in_features
+        # model.classifier.fc = nn.Linear(num_ftrs, num_classes)
     elif model_type == "multihead":
         model = MultiheadModel(num_classes)
     return model.to(device)

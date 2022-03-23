@@ -24,6 +24,7 @@ if __name__ == "__main__":
     parser.add_argument("--new_turtles_fraq", default=0., type=float)
     parser.add_argument("--wandb", action="store_true")
     parser.add_argument("--views_model", default=argparse.SUPPRESS)
+    parser.add_argument("--name", default="turtle", type=str)
 
     args = parser.parse_args()
 
@@ -67,14 +68,15 @@ if __name__ == "__main__":
 
         criterion = nn.CrossEntropyLoss()
         # optimizer = optim.Adam(model.parameters(), lr=3e-4)
-        optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+        optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=0.001) 
         scheduler = None
 
         model = train_model(
             model, dataloaders_dict, criterion, optimizer,
             scheduler=scheduler, num_epochs=num_epochs,
             device=device, use_wandb=use_wandb, mode=model_type,
-            target="labels", name="model", views_model=views_model
+            target="labels", name="model", views_model=views_model,
+            wandb_name=args.name
         )
     elif args.mode == "train_views":
         dataloaders_dict = {

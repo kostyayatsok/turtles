@@ -33,9 +33,11 @@ def load_csv():
     # Read in csv files.
     train = read_csv_from_web('train.csv')
     test = read_csv_from_web('test.csv')
-    
-    all_ids = np.unique(train.turtle_id)
     extra = read_csv_from_web('extra_images.csv')
+    
+    # train = train[train["image_location"].isin(['top', 'Top'])]
+
+    all_ids = np.unique(train.turtle_id)
     extra["is_known_id"] = extra["turtle_id"].isin(all_ids)
     train["is_known_id"] = train["turtle_id"].isin(all_ids)
   
