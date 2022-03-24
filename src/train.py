@@ -32,7 +32,7 @@ def train_model(
 
             running_loss = 0.0
             running_corrects = 0
-
+            running_corrects_with_news = 0
             # Iterate over data.
             for inputs, labels, views in tqdm(
                                     dataloaders[phase],
@@ -54,9 +54,11 @@ def train_model(
                     optimizer.step()
                 # statistics
                 running_loss += loss.item() * inputs.size(0)
-                running_corrects += torch.sum(preds == labels.data)
+                running_corrects += torch.sum(preds[labels.data!=100] == labels.data[labels.data!=100])
+                running_corrects_with_news += torch.sum(preds == labels.data)
             epoch_loss = running_loss / len(dataloaders[phase].dataset)
             epoch_acc = running_corrects.double() / len(dataloaders[phase].dataset)
+            epoch_acc_with_news = running_corrects_with_news.double() / len(dataloaders[phase].dataset)
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
 
@@ -65,6 +67,7 @@ def train_model(
                     "epoch":epoch,
                     f"loss_{phase}":epoch_loss,
                     f"acc_{phase}":epoch_acc,
+                    f"acc(with news)_{phase}":epoch_acc_with_news,
                 })
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
