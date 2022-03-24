@@ -12,7 +12,8 @@ use_wandb = False
 
 num_classes = 101#2265
 batch_size = 32
-num_epochs = 30
+num_epochs = 50
+lr = 0.01
 input_size = 224
 train_val_split_fraq = 0.9
 feature_extract = False

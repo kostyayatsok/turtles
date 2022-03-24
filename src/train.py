@@ -73,6 +73,11 @@ def train_model(
                 torch.save(model.state_dict(), f"{CHECKPOINTS_DIR}/{name}.pt")
         print()
         if scheduler is not None:
+            if use_wandb:
+              wandb.log({
+                "epoch": epoch,
+                "lr": scheduler.get_last_lr()[0]
+              })
             scheduler.step()
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))

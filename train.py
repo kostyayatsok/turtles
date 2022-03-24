@@ -25,6 +25,7 @@ if __name__ == "__main__":
     parser.add_argument("--wandb", action="store_true")
     parser.add_argument("--views_model", default=argparse.SUPPRESS)
     parser.add_argument("--name", default="turtle", type=str)
+    parser.add_argument("--num_epochs", default=argparse.SUPPRESS, type=int)
 
     args = parser.parse_args()
 
@@ -59,7 +60,9 @@ if __name__ == "__main__":
     if "views_model" in args:
         views_model = get_model(3, device, "simple")
         views_model.load_state_dict(torch.load(args.views_model))
-
+    if "num_epochs" in args:
+        num_epochs = args.num_epochs
+    
     if args.mode == "train":
         dataloaders_dict = {
             "train" : get_dataloader(train, train_transforms, id2idx, batch_size),
@@ -68,8 +71,21 @@ if __name__ == "__main__":
 
         criterion = nn.CrossEntropyLoss()
         # optimizer = optim.Adam(model.parameters(), lr=3e-4)
-        optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=0.001) 
-        scheduler = None
+        optimizer = optim.SGD(
+          model.parameters(),
+          lr=lr,
+          momentum=0.9,
+          weight_decay=0.001
+        ) 
+        
+        scheduler = optim.lr_scheduler.OneCycleLR(
+          optimizer,
+          max_lr=lr,
+          pct_start=0.5,
+          total_steps=num_epochs,
+          div_factor=1,
+          final_div_factor=100,
+        )
 
         model = train_model(
             model, dataloaders_dict, criterion, optimizer,
